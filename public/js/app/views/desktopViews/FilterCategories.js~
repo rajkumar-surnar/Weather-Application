@@ -1,0 +1,199 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'datepicker',
+    'views/desktopViews/Form',
+    'views/desktopViews/CategoriesUpload',
+    'text!templates/desktopTemplates/CategoriesFilterView.html',
+    'collections/Categories',
+    'collections/Brands'
+], function($, _, Backbone, datepicker, FormView, CategoriesUploadView, CategoriesFilterTemplate, Categories, Brands){
+        var AdminCategoriesFilterView = Backbone.View.extend({
+            initialize: function (option) { this.parent=option.parent;},
+            render: function(){
+                var that = this;
+                this.categories = new Categories();
+                this.bricks = new Categories();
+                this.brands = new Brands();
+                this.categories.fetch({data: { dataType:"jsonp", "action": "FILTERCATEGORY", "categoryType": "FAMILY"}, success: function () {
+                    that.$el.append(_.template(CategoriesFilterTemplate, {data : that.categories.toJSON()}));
+                    that.fetchBrands();
+                    that.fetchBrickCats($("#skuFamily option:selected").attr("id"));
+                }});
+	        return this.el;
+            },
+            events:{
+               'click .filterList li .btn'         : 'dropDownFilterMenu',
+               'click .closePopup'                 : 'closePopup',
+               'click .filterTableBtn'             : 'filterTable',
+               'click .resetBtn'                   : 'resetTable',
+               'click .actionFilterMenu li'        : 'action',
+               'click #skuFamily'                  : 'displayBrickCats'
+            },
+
+            fetchBrands: function () {
+                var that = this, skuName, tradeItemNumber;
+                if($("#skuName", this.el).val() === "All"){
+                    skuName = "";
+                } else {
+                    skuName = $("#skuName", this.el).val();
+                }
+                if($("#skuNumber", this.el).val() === "All"){
+                    tradeItemNumber = "";
+                } else {
+                    tradeItemNumber = $("#skuNumber", this.el).val();
+                }
+
+                $(".skuFamily", this.el).html($("#skuFamily").children("option:selected").attr("value"));
+                $(".skuBrick", this.el).html($("#skuBrick").children("option:selected").attr("value"));
+                $(".skuNumber", this.el).html($("#skuNumber").val());
+                $(".skuName", this.el).html($("#skuName").val());
+                $(".productStatus", this.el).html($("#productStatus").children("option:selected").attr("value"));
+
+                $(".gridContentBrandsList",that.el).html("<div class='loadingImageContainer'><img src='pics/bx_loader.gif'/></div>");
+                that.brands.fetch({data: { dataType: "jsonp", "action": "GETSELLERSUBUNSUBBRANDLIST"}, success: function () {
+                    console.log("Fetching");that.parent.newCollection(that.brands);
+                }});
+            },
+
+            fetchBrickCats: function (cat) {
+                var that = this;
+                this.bricks.fetch({data: { dataType: "jsonp", "action": "FILTERCATEGORY", "categoryType": "BRICK", "family": cat }, success: function () {
+                    $("#skuBrick").html("<option id='' value='All'>All</option>")
+                    that.bricks.forEach(function (options) {
+                        options.toJSON().categories.forEach(function (option) {
+                            $("#skuBrick").append("<option id="+option._id+">"+option.name+"</option>");
+                        });
+                    });
+                }});
+            },
+
+            dropDownFilterMenu: function (e) {
+                //if ($(e.target).hasClass("btn")) {
+                    $(".filterList .dropDown", this.el).slideUp();
+                    if (!$("." + $(e.target).closest("li").attr("id")).is(":visible")) {
+                        $("." + $(e.target).closest("li").attr("id")).slideDown();
+                    }
+                //}
+                
+            },
+
+            closePopup: function () {
+                $(".filterList .dropDown", this.el).slideUp();
+            },
+
+            filterTable: function () {
+                $(".tableContainer", this.parent.el).html("<div class='loadingImageContainer'><img src='pics/bx_loader.gif'/></div>");
+                this.closePopup();
+                this.fetchSKUs();
+            },
+
+            resetTable: function () {
+                $("#skuNumber, #skuName").val("");
+                $("#skuFamily, #skuBrick, #productStatus").children("option:first-child").prop('selected', true);
+                this.fetchSKUs();
+            },
+
+            action: function (e) {
+                this.closePopup();
+                var that = this;
+                switch ($(e.target).attr("action")) {
+                    case "upload" : that.upload();
+                    break;
+                }
+            },
+
+            downloadSKUPrices: function (btnId) {
+                var that = this;
+                var formObj = {header: "SKU Prices", content: [], button:[{
+                    id: btnId,
+                    label: "Download",
+                },{
+                    id: "cancel",
+                    label: "Cancel"
+                }]};
+                var familyCats = [], brickCats = [];
+                this.categories.forEach(function (category) {
+                    familyCats.push({value: "All", id: "All"});
+                    category.toJSON().categories.forEach(function (cat) {
+                        var obj = {
+                            value: cat.name,
+                            id: cat._id
+                        };
+                        familyCats.push(obj);
+                    });
+                });
+                this.bricks.forEach(function (category) {
+                    brickCats.push({value: "All", id: "All"});
+                    category.toJSON().categories.forEach(function (cat) {
+                        var obj = {
+                            value: cat.name,
+                            id: cat._id
+                        };
+                        brickCats.push(obj);
+                    });
+                });
+                var data = [{
+                        id: "family",
+                        className: "",
+                        label: "Family",
+                        fieldType: "select",//text, select, date, checkBox
+                        editable: false,
+                        options: familyCats,
+                    }, {
+                        id: "brick",
+                        className: "",
+                        label: "Brick",
+                        fieldType: "select",//text, select, date, checkBox
+                        editable: false,
+                        options: brickCats
+                    }, {
+                        id: "sKUNumber",
+                        className: "",
+                        label: "SKU Numbe",
+                        fieldType: "text",//text, select, date, checkBox
+                        editable: true,
+                        value: " ",
+                    }, {
+                        id: "sKUName",
+                        className: "",
+                        label: "SKU Name",
+                        fieldType: "text",//text, select, date, checkBox
+                        editable: true,
+                        value: " ",
+                    }, {
+                        id: "status",
+                        className: "",
+                        label: "Status",
+                        fieldType: "select",//text, select, date, checkBox
+                        editable: false,
+                        options:[{
+                            value: "New",
+                            id: "NEW"
+                        }, {
+                            value: "Active",
+                            id: "ACTIVE"
+                        }, {
+                            value: "Inactive",
+                            id: "INACTIVE"
+                        }],
+                    }];
+                formObj.content.push(data);
+                $(".popupContainer").html(new FormView({collection: formObj}).render()).show();
+            },
+
+            downloadSKUs: function () {
+                this.downloadSKUPrices("sKUsDownload");
+            },
+
+            upload: function () {
+                $(".popupContainer").html(new CategoriesUploadView().render()).show();
+            },
+
+            displayBrickCats: function () {
+                this.fetchBrickCats($("#skuFamily option:selected").attr("id"));
+            }
+  });
+  return AdminCategoriesFilterView;
+});

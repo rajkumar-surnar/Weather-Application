@@ -1,0 +1,118 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'views/desktopViews/Grid',
+    'views/desktopViews/FullScreenPopupForm',
+    'collections/ItemErrors'
+],function($,_, Backbone, GridView, FullScreenPopupFormView, ItemErrors){
+    var ContentBrandsUploadView = Backbone.View.extend({
+        tagName:  "div",
+	className:"popupWrapper",
+	render: function(){
+            var formObj = {header: "Upload Brands", content: [], button:[{
+                id: "brandsUpload",
+                label: "Upload",
+            },{
+                id: "cancel",
+                label: "Cancel"
+            }]};
+            var data = [{
+                slide: false,
+                header:"Upload File",
+                content: [{
+                        id: "fileType",
+                        className: "",
+                        label: "File Type",
+                        fieldType: "select",//text, select, date, checkBox
+                        editable: false,
+                        options:[{
+                            value: "Brands",
+                            id: "Brands"
+                        }, {
+                            value: "Brand Categories",
+                            id: "BrandCategories"
+                        }],
+                    }, {
+                    id: "chooseFile",
+                    className: "",
+                    label: "Choose File",
+                    fieldType: "file",//text, select, date, checkBox, file(load file)
+                    editable: false,
+                    value: "Add File",
+                }]
+            }]
+            formObj.content.push(data);
+            $(this.el).html(new FullScreenPopupFormView({collection: formObj}).render());
+            $(this.el).append("<div class='itemErrorTableContainer'></div>");
+            return this.el;
+	},
+	events: {
+            'click #brandsUpload' : 'BrandsUpload',
+            'click #errorLogs'    : 'Errors'
+  	},
+
+        Errors:function(){
+             /*var errors = [{item:"xyz",errorMessage:"Type Mismatch"},{item:"abs",errorMessage:"Type Error"}];*/
+              console.log("hi...");
+             var that = this;
+             this.errors = new ItemErrors();
+             this.errors.fetch({data: { dataType:"jsonp", "action": "ITEM-ERRORS"}, success: function () {
+                   var collection = {Pagination: "true", CheckBox: "false", rows: [], className: ""};
+                      that.errors.forEach(function (Err) {
+                          var row = [{
+                              header: "Item",
+                              className: "errorItem",
+                              value: Err.toJSON().item,
+                              id: "",
+                              cell: "string",
+                              sortable: "true"
+                          }, {
+                              header: "Error Message",
+                              className: "itemErrMsg",
+                              value: Err.toJSON().errorMessage,
+                              cell: "string",
+                              sortable: "true"
+                          }];
+                          collection.rows.push(row);
+                      });
+                      //$( "table" ).colResizable({ disable : true });
+                      $(".itemErrorTableContainer", that.el).html(new GridView({collection: collection}).render());
+                }});
+        },
+
+        BrandsUpload: function () {
+            var that=this;
+            var entitydata = $("#fileType").children("option:selected").attr("id");
+            var filedata = $('input[name="fileInput"]')[0].files[0];
+            var data = new FormData();
+            data.append('entity', entitydata);
+            data.append('file', filedata);
+            $.ajax({
+                url: 'importMetaDataCSVFile',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                beforeSend: function() 
+                {
+                    $(".loadingImg").show();
+                },
+                success: function() {
+                    console.log("success");
+                    $("#message").html("<font color='green'>File is uploaded successfully</font>");
+                    //$(".progressDone").width('100%');
+                },
+                complete: function(response) {
+                    $(".loadingImg").hide();
+                    //$("#message").html("<font color='green'>"+response.responseText+"</font>");
+                },
+                error: function() {
+                    $("#message").html("<font color='red'> ERROR: unable to upload files</font>");	 
+                }
+            });
+        }
+    });
+    return ContentBrandsUploadView; 
+});

@@ -1,0 +1,74 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'views/desktopViews/Grid',
+    'views/desktopViews/FilterAttributes'
+],function($,_, Backbone, GridView, FilterAttributesView){
+    var BrandsView = Backbone.View.extend({
+        initialize:function(options){
+	    this.permision = options.per.split("-");
+        },
+
+        render: function () {
+            var that = this;
+            this.$el.html("<div class='filtersContainer'></div><div class='tableContainer'></div>");
+            $(".tableContainer", this.el).html("<div class='loadingImageContainer'><img src='pics/bx_loader.gif'/></div>");
+            $(".filtersContainer", this.el).html(new FilterAttributesView({parent: that}).render());
+            return this.el;
+        },
+
+        newCollection: function (Brands) {
+            var collection = {Pagination: "true", CheckBox: "true", rows: [], className: ""};
+            Brands.forEach(function (Brand) {console.log(Brand);
+                var row = [{
+                    header: "Account#",
+                    className: "accnumber",
+                    value: sKU.toJSON().accountNumber,
+                    id: "",
+                    cell: "number",
+                    sortable: "true"
+                }, {
+                    header: "First Name",
+                    className: "firstname",
+                    value: sKU.toJSON().partyId.person.firstName,
+                    id: "",
+                    cell: "string",
+                    sortable: "true"
+                }, {
+                    header: "Last Name",
+                    className: "lastname",
+                    value: sKU.toJSON().partyId.person.lastName,
+                    id: "",
+                    cell: "string",
+                    editable: "false",
+                    sortable: "true"
+                }, {
+                    header: "Mobile Number",
+                    className: "mobnumber",
+                    value: sKU.toJSON().partyId.contactNumber[0].contactNum,
+                    id: "",
+                    cell: "number",
+                    sortable: "false"
+                }, {
+                    header: "Email",
+                    className: "email",
+                    value: sKU.toJSON().partyId.electronicAddress[0].eAddress,
+                    id: "",
+                    cell: "string",
+                    sortable: "false"
+                }, {
+                    header: "Address",
+                    className: "address",
+                    value: " ",//sKU.toJSON().address.addressLine1+", "+sKU.toJSON().address.addressLine2,
+                    id: "",
+                    cell: "string",
+                    sortable: "false"
+                }];
+                collection.rows.push(row);
+            });
+            $(".tableContainer", this.el).html(new GridView({collection: collection}).render());
+        },
+    });
+    return BrandsView;
+});

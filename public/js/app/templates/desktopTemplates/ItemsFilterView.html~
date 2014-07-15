@@ -1,0 +1,57 @@
+<ul class="filterList">
+    <li class="headerButton" id="actionFilterMenu">
+        <div class="btn actionBtn" id="actionBtn"><span class="btnLabel">Action</span><span class="btnIcon downArrow"></span></div>
+        <ul class="actionFilterMenu dropDown">
+            <li action="upload">Upload</li>
+        </ul>
+    </li>
+    <li class="headerButton" id="findFilterMenu">
+        <div class="btn findBtn" id="findBtn"><span class="btnIcon findIcon"></span><span class="btnLabel">Find</span></div>
+        <div class="findFilterMenu dropDown">
+            <span class="closePopup"><img class="removeItem" src="/../pics/close-icon.png"></span>
+            <div class="filterFormField">
+                <label for="skuFamily">Category: </label></br>
+                <select id="skuFamily" class="value">
+                    <% _.each(data[0].categories,function (fcat) { %>
+                        <option id="<%= fcat._id %>"><%= fcat.name %></option>
+                    <% }); %>			
+                </select>
+            </div>
+            <div class="filterFormField">
+                <label for="skuBrick">Brand: </label></br>
+                <select id="skuBrick" class="value">
+                    <option id='' value="All">--select--</option>
+                </select>
+            </div>
+            <div class="filterFormField">
+                <label for="skuNumber">Item Name: </label></br>
+                <input id="skuNumber" class="value" type="text" value="All">
+            </div>
+            <div class="filterFormField">
+                <label for="skuName">Type: </label></br>
+                <input id="skuName" class="value" type="text" value="All">
+            </div>
+            <div class="filterFormField">
+                <label for="productStatus">Status: </label></br>
+                <select id="productStatus" class="value">
+                    <option class="" value="All">All</option>
+                    <option class="NEW" value="New">New</option>
+                    <option class="ACTIVE" value="Active">Active</option>
+                    <option class="INACTIVE" value="InActive">InActive</option>
+                </select>
+            </div>
+            <div class="filterFormField btnContainer">
+                <div class="btn filterTableBtn">Find</div>
+                <div class="btn resetBtn">Reset</div>
+            </div>
+        </div>
+    </li>
+</ul>
+<ul class="filterCats">
+    <li><b>Category:&nbsp</b><span class="skuFamily"></span></li>
+    <li><b>Brand:&nbsp</b><span class="skuBrick"></span></li>
+    <li><b>Item Name:&nbsp</b><span class="skuNumber"></span></li>
+    <li><b>Type:&nbsp</b><span class="skuName"></span></li>
+    <li><b>Status:&nbsp</b><span class="productStatus"></span></li>
+</ul>
+

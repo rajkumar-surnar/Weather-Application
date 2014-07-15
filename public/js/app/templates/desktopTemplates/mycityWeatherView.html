@@ -1,0 +1,31 @@
+<label class="cityName"><%= data.city.name %>, <%= data.city.country %></label>
+<div class="CityWeatherData">
+	<div class="firstColumn"><span class="TypeSpan">Type&#8594;</span><span class="DateSpan">Date&#8595;</span></div>
+	<div class="secondColumn" id="TempHeading">Main Info</div>
+	<div class="thirdColumn" id="weatherHeading">Weather</div>
+</div>
+<div class="scrapDiv"></div>
+<ul class="VariableList">
+<%_.each(data.list,function(dayData){console.log(dayData);%>
+	<li>    
+                <%
+                 var dateString = "";
+                 var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                 var weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+		 var serverDate = dayData.dt;
+                 var parsedDate = new Date(serverDate * 1000);
+                 dateString = weekdays[parsedDate.getDay()]+", "+ parsedDate.getDate()+" "+ months[parsedDate.getMonth()] +" "+ parsedDate.getFullYear();
+                %>
+		<div class="firstColumn"><%= dateString %></div>
+		<div class="secondColumn">
+			<div class="cityHumidity"><label>Humidity:</label><%= dayData.main.humidity %></div>
+			<div class="cityPressure"><label>Pressure:</label><%= dayData.main.pressure %></div>
+			<div class="cityTemp"><label>Temp:</label><%= dayData.main.temp %></div>
+			<div class="citySeaLevel"><label>Sea-Level:</label><%= dayData.main.sea_level %></div>
+			<div class="cityminTemp"><label>Min:</label><%= dayData.main.temp_min %></div>
+			<div class="citymaxTemp"><label>Max:</label><%= dayData.main.temp_max %></div>
+		</div>
+		<div class="thirdColumn"><%= dayData.weather[0].main%> (<%= dayData.weather[0].description%>)</div>
+	</li>
+<%});%>
+</ul>

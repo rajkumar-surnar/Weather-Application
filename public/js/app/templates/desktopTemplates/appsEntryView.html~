@@ -1,0 +1,16 @@
+<div class="heading">Weather Forcasting Department</div>
+<div class="mainContainer">
+	<div class="cityContainer">
+		<label>Please Select City</label>
+		<select multiple="multiple" id="CityOptions">
+		</select>
+                <div class="CitySelectionErr">Please select one city!!!</div>
+	</div>
+        <div class="BtnContainer">
+	   <div class="btn" id="ShowWetherInfo">Show Weather</div><br>
+           <div class="btn" id="MycityWeather">My City Weather<br>(GPS Based)</div>
+        </div>
+        <div class="weatherInfoContainer">
+		
+        </div>
+</div>
