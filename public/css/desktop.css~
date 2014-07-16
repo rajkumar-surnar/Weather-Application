@@ -27,7 +27,7 @@ margin: 0px 25px;
 height: 221px;
 }
 
-.cityContainer label,.cityContainer .CitySelectionErr {
+.cityContainer .CitySelectionErr {
 width: 99%;
 font-size: 15px;
 height: 20px;
@@ -36,7 +36,21 @@ text-align: center;
 }
 
 .cityContainer label {
+width:99%;
+}
+.cityName {
+width:120px;
+}
+
+.cityContainer label,
+.cityName {
 border: 1px solid #BEBEBE;
+float: left;
+text-align: center;
+background: blue;
+opacity: 0.6;
+margin-top:10px;
+color: white;
 }
 
 .CitySelectionErr {
@@ -89,7 +103,7 @@ overflow-y:scroll;
 border: 1px solid #BEBEBE;
 }
 
-.cityName {
+/*.cityName {
 border: 1px solid #BEBEBE;
 width: 100px;
 float: left;
@@ -98,7 +112,7 @@ background: blue;
 opacity: 0.6;
 margin-top:10px;
 color: white;
-}
+}*/
 
 .CityWeatherData {
 float: left;
@@ -170,56 +184,15 @@ float:left;
 margin-top: 13px;
 }
 
-.CityWeatherData li div {
-font-size: 15px;
-border-top: 1px solid #B6B6B6;
-padding: 6px 5px;
-height: 36px;
-}
-
-.secondColumn .dayTemp,
-.secondColumn .minTemp,
-.secondColumn .maxTemp,
-.secondColumn .nightTemp,
-.secondColumn .mornTemp,
-.secondColumn .eveTemp {
+.secondColumn .SubMenu {
 height: 11px;
 width:130px;
 float: left;
 position: relative;
 }
 
-.dayTemp label,
-.minTemp label,
-.maxTemp label,
-.nightTemp label,
-.mornTemp label,
-.eveTemp label {
+.SubMenup label {
 width: 40px;
-height: 11px;
-float: left;
-position: relative;
-}
-
-.secondColumn .cityHumidity,
-.secondColumn .cityPressure,
-.secondColumn .cityTemp,
-.secondColumn .citySeaLevel,
-.secondColumn .cityminTemp,
-.secondColumn .citymaxTemp {
-height: 11px;
-width:130px;
-float: left;
-position: relative;
-}
-
-.cityHumidity label,
-.cityPressure label,
-.cityTemp label,
-.citySeaLevel label,
-.cityminTemp label,
-.citymaxTemp label {
-width: 70px;
 height: 11px;
 float: left;
 position: relative;
