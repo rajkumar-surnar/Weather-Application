@@ -12,11 +12,11 @@ define([
     el: $('body'),
     initialize: function (){},
     render: function(){
-	$(this.el).html(_.template( appsEntryTemplate, {}));
-	this.addCities();
+        $(this.el).html(_.template( appsEntryTemplate, {}));
+        this.addCities();
     },
     events:{
-        'click #ShowWetherInfo' : 'showCityData',
+        'click #ShowWetherInfo'     : 'showCityData',
         'click #CityOptions option' : 'HideErrorMsg',
         'click #MycityWeather'      : 'getLocation'
      },
@@ -34,7 +34,7 @@ define([
 	    	        success: function() { 
                               $(".weatherInfoContainer").append(_.template(mycityWeatherTemplate, {data:mycityData.toJSON()}));
                         }
-	           });
+                   });
             });
         } else { 
             alert("Geolocation is not supported by this browser.");
@@ -42,7 +42,7 @@ define([
     },
     addCities: function () {
         var cities = [{id:1259229,name:"Pune",country:"IN"},{id:6619347,name:"Navi Mumbai",country:"IN"},
-			{id:1275339,name:"Mumbai",country:"IN"},{id:1264527,name:"Chennai",country:"IN"},
+                      {id:1275339,name:"Mumbai",country:"IN"},{id:1264527,name:"Chennai",country:"IN"},
                         {id:4321929,name:"Delhi",country:"IN"},{id:1275004,name:"Kolkata",country:"IN"},
                         {id:1274693,name:"Chandrapur",country:"IN"},{id:1258526,name:"Ranchi",country:"IN"},
                         {id:1176734,name:"Hyderabad",country:"IN"},{id:1253102,name:"Vishakhapatnam",country:"IN"},
@@ -56,7 +56,7 @@ define([
                         {id:1275817,name:"Bhubaneshwar",country:"IN"},{id:1278710,name:"Amritsar",country:"IN"},
                         {id:1265014,name:"Latur",country:"IN"},{id:1252942,name:"Wardha",country:"IN"},
                         {id:1264733,name:"Lucknow",country:"IN"},{id:1269515,name:"Jaipur",country:"IN"}];
-	cities.sort(this.SortByName);
+        cities.sort(this.SortByName);
         $.each(cities,function(i,city){
              $("#CityOptions").append("<option id="+city.id+" value="+city.name+">"+city.name+"</option>");
         });
@@ -80,11 +80,11 @@ define([
        this.cityData = new city();
        $.each(cities,function(i,id){
             that.cityData.fetch({
-    		 url: "http://api.openweathermap.org/data/2.5/forecast/daily?id="+ id +"&cnt=14&APPID=32e54c52a5dbc89866056c0d07cc567d",
-	    	 success: function() { 
+    	          url: "http://api.openweathermap.org/data/2.5/forecast/daily?id="+ id +"&cnt=14&APPID=32e54c52a5dbc89866056c0d07cc567d",
+                  success: function() { 
                       $(".weatherInfoContainer").append(_.template(cityWeatherTemplate, {data:that.cityData.toJSON()}));
                 }
-	    });
+            });
        });
     }
   });
